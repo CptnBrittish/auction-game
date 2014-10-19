@@ -1,5 +1,5 @@
 #include "trader.h"
-#include "matchStructs.h"
+#include "match.h"
 #include "limits.h"
 
 #include <string>
@@ -48,9 +48,9 @@ void trader::getMatchedBid(matchedBid matched){
     std::cout << "Trader Name: " << getName() << std::endl
 	      << "Received Match" << std::endl;
     if(getType() == 'A'){
-	std::cout << "Matched with: " << matched.matchedTraderOne << std::endl;
+	std::cout << "Matched with: " << matched.sellerName << std::endl;
     } else {
-	std::cout << "Matched with: " << matched.matchedTraderTwo << std::endl;
+	std::cout << "Matched with: " << matched.buyerName << std::endl;
     }
     std::cout << "With a clearing price of: " << matched.clearingPrice << std::endl
 	      << std::endl;

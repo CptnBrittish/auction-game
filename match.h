@@ -4,8 +4,8 @@
 #include <string>
 
 struct matchedBid {
-    std::string matchedTraderOne;
-    std::string matchedTraderTwo;
+    std::string sellerName;
+    std::string buyerName;
     double clearingPrice;
 };
 

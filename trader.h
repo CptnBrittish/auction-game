@@ -3,7 +3,7 @@
 
 #include <string>
 #include "bid.h"
-#include "matchStructs.h"
+#include "match.h"
 
 class trader {
 private:

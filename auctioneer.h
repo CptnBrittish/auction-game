@@ -1,7 +1,7 @@
 #ifndef AUCTIONEER_H
 #define AUCTIONEER_H
 
-#include "matchStructs.h"
+#include "match.h"
 #include "bid.h"
 #include "limits.h"
 

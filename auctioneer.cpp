@@ -1,6 +1,6 @@
 #include "auctioneer.h"
 #include "bid.h"
-#include "matchStructs.h"
+#include "match.h"
 
 #include <iostream>
 
@@ -43,8 +43,8 @@ void auctioneer::announceBids(){
 void auctioneer::announceMatches(){
     cout << "Matches Found\n";
     for(int i = matches.size()-1; i>=0; i--){
-	cout << "Buyer Name: " << matches[i].matchedTraderOne << endl
-	     << "Seller Name: " << matches[i].matchedTraderTwo << endl
+	cout << "Buyer Name: " << matches[i].buyerName << endl
+	     << "Seller Name: " << matches[i].sellerName << endl
 	     << "Clearing Price: " << matches[i].clearingPrice << endl
 	     << endl;
     }
@@ -70,8 +70,8 @@ void auctioneer::matchBids(){
 
 		//create the match structure and fill with infomation
 		matchedBid newMatch;
-		newMatch.matchedTraderOne = buyerBids[buyerMatchId].getTraderName();
-		newMatch.matchedTraderTwo = sellerBids[seller].getTraderName();
+		newMatch.buyerName = buyerBids[buyerMatchId].getTraderName();
+		newMatch.sellerName = sellerBids[seller].getTraderName();
 		newMatch.clearingPrice = clearBids(&sellerBids[seller], &buyerBids[buyerMatchId]);
 
 		matches.push_back(newMatch);

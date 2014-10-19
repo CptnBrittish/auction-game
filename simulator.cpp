@@ -1,6 +1,6 @@
 #include "simulator.h"
 #include "trader.h"
-#include "matchStructs.h"
+#include "match.h"
 
 #include <vector>
 
@@ -57,7 +57,10 @@ void simulator::getAndDistributeMatches(){
     //send match to the trader
     for(int j = auctionMaster.getNumMatches()-1; j >= 0; j--){
 	for(int i = NUMTRADERS-1; i >= 0; i--){
-	    if(matchToDistribute[j].matchedTraderOne == Traders[i].getName()){
+	    if(matchToDistribute[j].buyerName == Traders[i].getName()){
+		Traders[i].getMatchedBid(matchToDistribute[j]);
+	    }
+	    if(matchToDistribute[j].sellerName == Traders[i].getName()){
 		Traders[i].getMatchedBid(matchToDistribute[j]);
 	    }
 	}

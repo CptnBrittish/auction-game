@@ -5,7 +5,7 @@
 #include "auctioneer.h"
 #include "bid.h"
 #include "limits.h"
-#include "matchStructs.h"
+#include "match.h"
 
 #include <vector>
 
