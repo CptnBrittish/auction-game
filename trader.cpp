@@ -47,7 +47,8 @@ bid trader::generateBid(){
 void trader::getMatchedBid(matchedBid matched){
     std::cout << "Trader Name: " << getName() << std::endl
 	      << "Received Match" << std::endl;
-    if(getType() == 'A'){
+    // We want to find the opposite type to us
+    if(getType() == 'B'){
 	std::cout << "Matched with: " << matched.sellerName << std::endl;
     } else {
 	std::cout << "Matched with: " << matched.buyerName << std::endl;
