@@ -25,19 +25,94 @@ void auctioneer::getBid(bid Bid){
 }
 
 void auctioneer::announceBids(){
-    cout << "Buyer Bids Received\n";
+    //find width of collumn
+    // 19 is how many characters are in "Buyer Bids received" the set smallest width
+    int width = 19;
     for(int i = buyerBids.size()-1; i>=0; i--){
-	cout << "Name: " << buyerBids[i].getTraderName() << endl
-	     << "Price: " << buyerBids[i].getBidPrice() << endl
-	     << endl;
+	if((buyerBids[i].getTraderName().size() + 6) > width){
+	    width = buyerBids[i].getTraderName().size() + 6;
+	}
+    }
+    //Add space for readability
+    width++;
+
+    cout << "Buyer Bids Received";
+    int currentPlace = 19;
+    //pad till edge of collumn
+    while(currentPlace < width){
+	cout << " ";
+	currentPlace++;
+    }
+    currentPlace = 0;
+    cout << "| ";
+    cout << "Seller Bids Received\n";
+
+    for(currentPlace = 0; currentPlace < width; currentPlace++){
+	cout << "-";
+    }
+    cout << "+";
+
+    int tempWidth = 20;
+    for(int i = sellerBids.size()-1; i>=0; i--){
+	if((sellerBids[i].getTraderName().size() + 6) > tempWidth){
+	    tempWidth = sellerBids[i].getTraderName().size() + 6;
+	}
+    }    
+    currentPlace = 0;
+    for(currentPlace = 0; currentPlace < tempWidth; currentPlace++){
+	cout << "-";
+    }
+    cout << endl;
+    currentPlace = 0;
+
+    for(int buyersLeftToPrint = buyerBids.size()-1, sellersLeftToPrint = sellerBids.size()-1;
+	buyersLeftToPrint >=0 || sellersLeftToPrint >=0;
+	buyersLeftToPrint--, sellersLeftToPrint--){
+	int nameLength = 6;
+	int priceLength = 7;
+	//check we have buyers and sellers left to print before we continue
+	if(buyersLeftToPrint > -1){
+	    currentPlace = nameLength + buyerBids[buyersLeftToPrint].getTraderName().size();
+	    cout << "Name: " << buyerBids[buyersLeftToPrint].getTraderName();
+	}
+	while(currentPlace < width){
+	    cout << " ";
+	    currentPlace++;
+	}
+	cout << "| ";
+	if(sellersLeftToPrint > -1){
+	    cout << "Name: " << sellerBids[sellersLeftToPrint].getTraderName();
+	}
+	cout << endl;
+	currentPlace = 0;
+	//way of counting digets coutursy Vatali on stack overflow simply divide by ten till we cant any more
+	if(buyersLeftToPrint > -1){
+	    int number = buyerBids[buyersLeftToPrint].getBidPrice();
+	    while (number) {
+		number /= 10;
+		currentPlace++;
+	    }
+	    currentPlace = currentPlace + priceLength;
+	    cout << "Price: " << buyerBids[buyersLeftToPrint].getBidPrice();
+	}
+	while(currentPlace < width){
+	    cout << " ";
+	    currentPlace++;
+	}
+	cout << "| ";
+	if(sellersLeftToPrint > -1){
+	    cout << "Price: " << sellerBids[sellersLeftToPrint].getBidPrice();
+	} 
+	cout << endl;
+	int i = 0;
+	while(i < width){
+	    cout << " ";
+	    i++;
+	}
+	cout << "|" << endl;
+
     }
 
-    cout << "Seller Bids Received\n";
-    for(int i = sellerBids.size()-1; i>=0; i--){
-	cout << "Name: " << sellerBids[i].getTraderName() << endl
-	     << "Price: " << sellerBids[i].getBidPrice() << endl
-	     << endl;
-    }
 }
 
 void auctioneer::announceMatches(){
