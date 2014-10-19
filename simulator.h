@@ -7,12 +7,15 @@
 #include "limits.h"
 #include "matchStructs.h"
 
+#include <vector>
+
 class simulator {
 private:
     static const int NUMTRADERS = NUMBUYER + NUMSELLER;
-    trader * Traders[NUMTRADERS];
+    std::vector<trader> Traders;
     auctioneer auctionMaster;
-    bid * Bid[NUMTRADERS];
+    std::vector<bid> Bid;
+ 
 
 public:
     simulator();

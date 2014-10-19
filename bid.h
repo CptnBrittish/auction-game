@@ -13,6 +13,7 @@ private:
 public:
     std::string getTraderName();
     void setTraderName(std::string);
+    void setTraderName(const char *);
 
     int getBidId();
     void setBidId(int);
@@ -24,6 +25,8 @@ public:
     void setBidPrice(double);
 
     bid();
+    bid(const bid&);
+    bid& operator=(const bid&);
     ~bid();
 };
 

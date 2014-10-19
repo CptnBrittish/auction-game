@@ -9,19 +9,21 @@ class trader {
 private:
     std::string traderName;
     char traderType;
-    bid *traderBid = new bid;
+    bid traderBid;
     matchedBid match;
 
 public:
     trader();
     trader(const char*, char);
+    trader(std::string, char);
     ~trader();
 
     std::string getName();
+    char getType();
 
-    bid * generateBid();
+    bid generateBid();
 
-    void getMatchedBid(matchedBid*);
+    void getMatchedBid(matchedBid);
 };
 
 #endif

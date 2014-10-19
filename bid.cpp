@@ -9,12 +9,31 @@ bid::bid(){
     bidPrice = 0.0;
 }
 
+bid::bid(const bid& other){
+    traderName = string(other.traderName);
+    bidId = other.bidId;
+    bidType = other.bidType;
+    bidPrice = other.bidPrice;
+}
+
+bid& bid::operator=(const bid& other){
+    traderName.assign(other.traderName);
+    bidId = other.bidId;
+    bidType = other.bidType;
+    bidPrice = other.bidPrice;
+    return *this;
+} 
+
 std::string bid::getTraderName(){
     return traderName;
 }
 
 void bid::setTraderName(string name){
-    traderName = name;
+    traderName.assign(name);
+}
+
+void bid::setTraderName(const char * name){
+    traderName.assign(string(name));
 }
 
 int bid::getBidId(){

@@ -2,29 +2,31 @@
 #include "trader.h"
 #include "matchStructs.h"
 
+#include <vector>
+
 simulator::simulator(){
     //Add the trader information here
-    Traders[0] = new trader("Thomas Atkinson", 'A');
-    Traders[1] = new trader("Thomas Quinn", 'A');
-    Traders[2] = new trader("Tori Clarke", 'A');
-    Traders[3] = new trader("Jarrod Briggs", 'A');
-    Traders[4] = new trader("James Lynch", 'A');
-    Traders[5] = new trader("Micheal Selby", 'A');
-    Traders[6] = new trader("Tegan Leahy", 'A');
-    Traders[7] = new trader("Kiani Denoord", 'A');
-    Traders[8] = new trader("Lenny Nesbit", 'A');
-    Traders[9] = new trader("Maria Nesbit", 'A');
+    Traders.push_back(trader("Thomas Atkinson", 'A'));
+    Traders.push_back(trader("Thomas Quinn", 'A'));
+    Traders.push_back(trader("Tori Clarke", 'A'));
+    Traders.push_back(trader("Jarrod Briggs", 'A'));
+    Traders.push_back(trader("James Lynch", 'A'));
+    Traders.push_back(trader("Micheal Selby", 'A'));
+    Traders.push_back(trader("Tegan Leahy", 'A'));
+    Traders.push_back(trader("Kiani Denoord", 'A'));
+    Traders.push_back(trader("Lenny Nesbit", 'A'));
+    Traders.push_back(trader("Maria Nesbit", 'A'));
 
-    Traders[10] = new trader("Ben Atkinson", 'B');
-    Traders[11] = new trader("Sam Kennedy", 'B');
-    Traders[12] = new trader("Chriss Quinn", 'B');
-    Traders[13] = new trader("John Smith", 'B');
-    Traders[14] = new trader("Tim Drummond", 'B');
-    Traders[15] = new trader("Ryan Hinton", 'B');
-    Traders[16] = new trader("Katherine Pettit", 'B');
-    Traders[17] = new trader("John Cuthill", 'B');
-    Traders[18] = new trader("Caitlin Langerak", 'B');
-    Traders[19] = new trader("Emily Abbott", 'B');
+    Traders.push_back(trader("Ben Atkinson", 'B'));
+    Traders.push_back(trader("Sam Kennedy", 'B'));
+    Traders.push_back(trader("Chriss Quinn", 'B'));
+    Traders.push_back(trader("John Smith", 'B'));
+    Traders.push_back(trader("Tim Drummond", 'B'));
+    Traders.push_back(trader("Ryan Hinton", 'B'));
+    Traders.push_back(trader("Katherine Pettit", 'B'));
+    Traders.push_back(trader("John Cuthill", 'B'));
+    Traders.push_back(trader("Caitlin Langerak", 'B'));
+    Traders.push_back(trader("Emily Abbott", 'B'));
 }
 
 simulator::~simulator(){
@@ -33,25 +35,30 @@ simulator::~simulator(){
 void simulator::collectBids(){
     //for each trader we need to collect bids and add them to our array of bids
     for(int i = NUMTRADERS-1; i >=0; i--){
-	*Bid[i] = *Traders[i]->generateBid();
+	Bid.push_back(Traders[i].generateBid());
     }
 }
 
 void simulator::distributeBids(){
     //Give our array of bids to the auctionmaster
-    auctionMaster.getBid(*Bid);
+    for(int i = Bid.size()-1; i >= 0; i--){
+	bid bidToPass = Bid[i];
+    auctionMaster.getBid(bidToPass);
+    }
+    auctionMaster.announceBids();
 }
 
 void simulator::getAndDistributeMatches(){
-    matchedBid * matchToDistribute = new matchedBid[auctionMaster.getNumMatches()];
+    auctionMaster.matchBids();
+    auctionMaster.announceMatches();
     //Get matches from auctionmaster
-    matchToDistribute = auctionMaster.distributeMatches();
+    std::vector<matchedBid> matchToDistribute = auctionMaster.distributeMatches();
 
     //send match to the trader
-    for(int j = auctionMaster.getNumMatches(); j >= 0; j--){
+    for(int j = auctionMaster.getNumMatches()-1; j >= 0; j--){
 	for(int i = NUMTRADERS-1; i >= 0; i--){
-	    if(matchToDistribute[j].matchedTraderOne == Traders[i]->getName()){
-		Traders[i]->getMatchedBid(matchToDistribute);
+	    if(matchToDistribute[j].matchedTraderOne == Traders[i].getName()){
+		Traders[i].getMatchedBid(matchToDistribute[j]);
 	    }
 	}
     }
