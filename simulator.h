@@ -6,7 +6,6 @@
 #include "bid.h"
 #include "limits.h"
 #include "match.h"
-
 #include <vector>
 
 class simulator {
@@ -15,15 +14,19 @@ private:
     std::vector<trader> Traders;
     auctioneer auctionMaster;
     std::vector<bid> Bid;
+    std::vector<matchedBid> matchedBids;
  
 
 public:
     simulator();
     ~simulator();
 
+    void runSimulator();
     void collectBids();
     void distributeBids();
     void getAndDistributeMatches();
+    void distributeEscrowMoney();
+    void getEscrowMoney();
 };
 
 #endif

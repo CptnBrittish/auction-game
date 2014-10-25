@@ -5,6 +5,7 @@
 
 struct matchedBid {
     int bidId;
+    int matchId;
     std::string sellerName;
     std::string buyerName;
     int quantity;

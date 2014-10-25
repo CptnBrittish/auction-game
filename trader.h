@@ -11,8 +11,11 @@ class trader {
 private:
 std::string traderName;
 char traderType;
+int money;
+int moneyLeftForBids;
+
 std::vector<bid> traderBids;
-matchedBid match;
+
 
 public:
 trader();
@@ -22,10 +25,16 @@ trader(std::string, char);
 
 std::string getName();
 char getType();
+int getTraderMoney();
+void setTraderMoney();
 
 std::vector<bid> generateBid();
+std::vector<matchedBid> matchedBids;
 
 void getMatchedBid(matchedBid);
+
+int sendMoneyToEscrow(int);
+void getMoneyFromEscrow(int, int);
 };
 
 #endif

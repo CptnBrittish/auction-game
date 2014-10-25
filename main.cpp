@@ -6,7 +6,5 @@
 int main(){
     simulator Simulator;
     srand(time(NULL));
-    Simulator.collectBids();
-    Simulator.distributeBids();
-    Simulator.getAndDistributeMatches();
+    Simulator.runSimulator();
 }

@@ -9,6 +9,7 @@
 trader::trader(){
     traderName.assign(std::string("Temporary Name"));
     traderType = 'A';
+    money = moneyLeftForBids = rand() % (MAXPRICE - MINPRICE) + MINPRICE;
 }
 
 trader::trader(const char * name, char type){
@@ -35,16 +36,22 @@ char trader::getType(){
 std::vector<bid> trader::generateBid(){
     //We want to cap at ten bids set in limits.h
     for(int numBids = MAXBIDS; numBids>=0; numBids--){
-	bid Bid;
-	Bid.setBidPrice(rand() % (MAXPRICE - MINPRICE) + MINPRICE);
-	//cap bid quantity at 200
-	Bid.setBidQuantity(rand() % MAXBIDQUANTITY+1);
-	Bid.setTraderName(traderName);
-	Bid.setBidType(traderType);
+	if(moneyLeftForBids != 0){
+	    bid Bid;
+	    Bid.setBidPrice(rand() % moneyLeftForBids);
+	
+	    // Reduce money left for bids
+	    moneyLeftForBids = moneyLeftForBids - Bid.getBidPrice();
+	
+	    //cap bid quantity at 200
+	    Bid.setBidQuantity(rand() % MAXBIDQUANTITY+1);
+	    Bid.setTraderName(traderName);
+	    Bid.setBidType(traderType);
 
-	//We set this anyway but there is no need to the auctionmaster deals with the bidIds after they are handed in
-	Bid.setBidId(0);
-	traderBids.push_back(Bid);
+	    //We set this anyway but there is no need to the auctionmaster deals with the bidIds after they are handed in
+	    Bid.setBidId(0);
+	    traderBids.push_back(Bid);
+	}
     }
 
     return traderBids;
@@ -63,4 +70,27 @@ void trader::getMatchedBid(matchedBid matched){
     std::cout << "With a clearing price of: " << matched.clearingPrice << std::endl;
     std::cout << "For the quantity of: " << matched.quantity << std::endl
 	      << std::endl;
+    matchedBids.push_back(matched);
+}
+
+int trader::sendMoneyToEscrow(int matchId){
+    for(int i = matchedBids.size()-1; i>=0; i--){
+	if(matchedBids[i].matchId == matchId){
+	    money = money - matchedBids[i].clearingPrice;
+	    int tempMoney = matchedBids[i].clearingPrice;
+	    matchedBids.erase(matchedBids.begin() + i);
+	    return tempMoney;
+	}
+    }
+    //control shouldnt reach here
+    return -1;
+}
+
+void trader::getMoneyFromEscrow(int escrowMoney, int matchId){
+    money = money + escrowMoney;
+    for(int i = matchedBids.size()-1; i>=0; i--){
+	if(matchedBids[i].matchId == matchId){
+	    matchedBids.erase(matchedBids.begin() + i);
+	}
+    }
 }

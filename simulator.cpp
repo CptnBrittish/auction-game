@@ -32,6 +32,14 @@ simulator::simulator(){
 simulator::~simulator(){
 }
 
+void simulator::runSimulator(){
+    collectBids();
+    distributeBids();
+    getAndDistributeMatches();
+    getEscrowMoney();
+    distributeEscrowMoney();
+}
+
 void simulator::collectBids(){
     //for each trader we need to collect bids and add them to our array of bids
     for(int i = NUMTRADERS-1; i >=0; i--){
@@ -46,7 +54,7 @@ void simulator::distributeBids(){
     //Give our array of bids to the auctionmaster
     for(int i = Bid.size()-1; i >= 0; i--){
 	bid bidToPass = Bid[i];
-    auctionMaster.getBid(bidToPass);
+	auctionMaster.getBid(bidToPass);
     }
     auctionMaster.announceBids();
 }
@@ -55,18 +63,40 @@ void simulator::getAndDistributeMatches(){
     auctionMaster.matchBids();
     auctionMaster.announceMatches();
     //Get matches from auctionmaster
-    std::vector<matchedBid> matchToDistribute = auctionMaster.distributeMatches();
+    matchedBids = auctionMaster.distributeMatches();
 
     //send match to the trader
     for(int j = auctionMaster.getNumMatches()-1; j >= 0; j--){
 	for(int i = NUMTRADERS-1; i >= 0; i--){
-	    if(matchToDistribute[j].buyerName == Traders[i].getName()){
-		Traders[i].getMatchedBid(matchToDistribute[j]);
+	    if(matchedBids[j].buyerName == Traders[i].getName()){
+		Traders[i].getMatchedBid(matchedBids[j]);
 	    }
-	    if(matchToDistribute[j].sellerName == Traders[i].getName()){
-		Traders[i].getMatchedBid(matchToDistribute[j]);
+	    if(matchedBids[j].sellerName == Traders[i].getName()){
+		Traders[i].getMatchedBid(matchedBids[j]);
 	    }
 	}
     }
 
+}
+
+void simulator::getEscrowMoney(){
+    for(int i = matchedBids.size()-1; i >= 0; i--){
+	for(int j = Traders.size()-1; j >= 0; j--){
+	    if(matchedBids[i].buyerName == Traders[j].getName()){
+		auctionMaster.addMoneyToEscrow(Traders[j].sendMoneyToEscrow(matchedBids[i].matchId), matchedBids[i].matchId);
+	    }
+	}
+    }
+}
+
+void simulator::distributeEscrowMoney(){
+    for(int i = matchedBids.size()-1; i >= 0; i--){
+	for(int j = Traders.size()-1; j >= 0; j--){
+	    if(matchedBids[i].sellerName == Traders[j].getName()){
+		Traders[j].getMoneyFromEscrow(auctionMaster.removeMoneyFromEscrow(matchedBids[i].matchId, matchedBids[i].sellerName),
+					     matchedBids[i].matchId);
+		matchedBids.erase(matchedBids.begin() + i);
+	    }
+	}
+    }
 }
