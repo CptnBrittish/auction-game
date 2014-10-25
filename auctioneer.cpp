@@ -68,8 +68,11 @@ void auctioneer::announceBids(){
     for(int buyersLeftToPrint = buyerBids.size()-1, sellersLeftToPrint = sellerBids.size()-1;
 	buyersLeftToPrint >=0 || sellersLeftToPrint >=0;
 	buyersLeftToPrint--, sellersLeftToPrint--){
+	
 	int nameLength = 6;
 	int priceLength = 7;
+	int quantityLength = 10;
+	
 	//check we have buyers and sellers left to print before we continue
 	if(buyersLeftToPrint > -1){
 	    currentPlace = nameLength + buyerBids[buyersLeftToPrint].getTraderName().size();
@@ -85,7 +88,8 @@ void auctioneer::announceBids(){
 	}
 	cout << endl;
 	currentPlace = 0;
-	//way of counting digets coutursy Vatali on stack overflow simply divide by ten till we cant any more
+
+
 	if(buyersLeftToPrint > -1){
 	    int number = buyerBids[buyersLeftToPrint].getBidPrice();
 	    while (number) {
@@ -102,12 +106,34 @@ void auctioneer::announceBids(){
 	cout << "| ";
 	if(sellersLeftToPrint > -1){
 	    cout << "Price: " << sellerBids[sellersLeftToPrint].getBidPrice();
+	}
+	cout << endl;
+	
+	currentPlace = 0;
+
+	if(buyersLeftToPrint > -1){
+	    int number = buyerBids[buyersLeftToPrint].getBidQuantity();
+	    while (number) {
+		number /= 10;
+		currentPlace++;
+	    } 
+	    currentPlace = currentPlace + quantityLength;
+	    cout << "Quantity: " << buyerBids[buyersLeftToPrint].getBidQuantity();
+	}
+	while(currentPlace < width){
+	    cout << " ";
+	    currentPlace++;
+	}
+	cout << "| ";
+	if(sellersLeftToPrint > -1){
+	    cout << "Quantity: " << sellerBids[sellersLeftToPrint].getBidQuantity();
 	} 
 	cout << endl;
-	int i = 0;
-	while(i < width){
+	
+	currentPlace  = 0;
+	while(currentPlace < width){
 	    cout << " ";
-	    i++;
+	    currentPlace++;
 	}
 	cout << "|" << endl;
 
@@ -128,37 +154,54 @@ void auctioneer::announceMatches(){
 void auctioneer::matchBids(){
     int buyerMatchId = NUMBUYER;
     bool foundBuyer = false;
+    bool matchedAllPossible = false;
 
-    //find the buyer with the highest price for each seller
-    for(int seller = numSellBids; seller >= 0; seller--){
-	for(int buyer = numBuyBids; buyer >= 0; buyer--){
-	    if(sellerBids[seller].getBidPrice() <= buyerBids[buyer].getBidPrice()){
-		if(buyerBids[buyer].getBidPrice() > buyerBids[buyerMatchId].getBidPrice()){
-		    buyerMatchId = buyer;
-		    foundBuyer = true;
+    while(matchedAllPossible == false){
+	matchedAllPossible = true;
+	//find the buyer with the highest price for each seller
+	for(int seller = numSellBids; seller >= 0; seller--){
+	    for(int buyer = numBuyBids; buyer >= 0; buyer--){
+		if(sellerBids[seller].getBidPrice() <= buyerBids[buyer].getBidPrice()){
+		    if(buyerBids[buyer].getBidQuantity() <= sellerBids[seller].getBidQuantity()){
+			if(buyerBids[buyer].getBidPrice() > buyerBids[buyerMatchId].getBidPrice()){
+			    buyerMatchId = buyer;
+			    matchedAllPossible = foundBuyer = true;
+			}
+		    }
+		}
+
+		//for each buyer found add to matches
+		if(foundBuyer){
+		    numMatches++;
+
+
+		    //create the match structure and fill with infomation
+		    matchedBid newMatch;
+		    newMatch.bidId = sellerBids[seller].getBidId();
+		    newMatch.buyerName = buyerBids[buyerMatchId].getTraderName();
+		    newMatch.sellerName = sellerBids[seller].getTraderName();
+		    newMatch.clearingPrice = clearBids(&sellerBids[seller], &buyerBids[buyerMatchId]);
+		    newMatch.quantity = buyerBids[buyerMatchId].getBidQuantity();
+
+		    matches.push_back(newMatch);
+
+		    //remove quantity from both bidder and seller
+		    sellerBids[seller].setBidQuantity(sellerBids[seller].getBidQuantity()-buyerBids[buyerMatchId].getBidQuantity());
+		    buyerBids[buyerMatchId].setBidQuantity(0);
+		    
+		    //remove the found matches from appropriate vecter if empty of all quantity
+		    if(buyerBids[buyerMatchId].getBidQuantity() < 1){
+			buyerBids.erase(buyerBids.begin() + buyerMatchId);
+			numBuyBids = numBuyBids - 1;
+		    }
+		    if(sellerBids[seller].getBidQuantity() < 1){
+			sellerBids.erase(sellerBids.begin() + seller);
+			numSellBids = numSellBids - 1;
+
+		    }
+		    foundBuyer = false;
 		}
 	    }
-
-	    //for each buyer found add to matches
-	    if(foundBuyer){
-		numMatches++;
-
-		//create the match structure and fill with infomation
-		matchedBid newMatch;
-		newMatch.buyerName = buyerBids[buyerMatchId].getTraderName();
-		newMatch.sellerName = sellerBids[seller].getTraderName();
-		newMatch.clearingPrice = clearBids(&sellerBids[seller], &buyerBids[buyerMatchId]);
-
-		matches.push_back(newMatch);
-
-		//remove the found matches from appropriate vecter
-		buyerBids.erase(buyerBids.begin() + buyerMatchId);
-		sellerBids.erase(sellerBids.begin() + seller);
-
-		numBuyBids = numBuyBids - 1;
-		numSellBids = numSellBids - 1;
-	    }
-	    foundBuyer = false;
 	}
     }
 }

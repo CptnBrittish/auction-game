@@ -7,6 +7,7 @@ class bid {
 private:
     std::string traderName;
     int bidId;
+    int bidQuantity;
     char bidType;
     double bidPrice;
 
@@ -17,6 +18,9 @@ public:
 
     int getBidId();
     void setBidId(int);
+
+    int getBidQuantity();
+    void setBidQuantity(int);
 
     char getBidType();
     void setBidType(char);

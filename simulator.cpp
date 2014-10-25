@@ -35,7 +35,10 @@ simulator::~simulator(){
 void simulator::collectBids(){
     //for each trader we need to collect bids and add them to our array of bids
     for(int i = NUMTRADERS-1; i >=0; i--){
-	Bid.push_back(Traders[i].generateBid());
+	std::vector<bid> traderBids = Traders[i].generateBid();
+	for(int i = traderBids.size()-1; i>=0; i--){
+	    Bid.push_back(traderBids[i]);
+	}
     }
 }
 

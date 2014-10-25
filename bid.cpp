@@ -6,12 +6,14 @@ using namespace std;
 
 bid::bid(){
     bidId = 0;
+    bidQuantity = 0;
     bidPrice = 0.0;
 }
 
 bid::bid(const bid& other){
     traderName = string(other.traderName);
     bidId = other.bidId;
+    bidQuantity = other.bidQuantity;
     bidType = other.bidType;
     bidPrice = other.bidPrice;
 }
@@ -19,6 +21,7 @@ bid::bid(const bid& other){
 bid& bid::operator=(const bid& other){
     traderName.assign(other.traderName);
     bidId = other.bidId;
+    bidQuantity = other.bidQuantity;
     bidType = other.bidType;
     bidPrice = other.bidPrice;
     return *this;
@@ -42,6 +45,14 @@ int bid::getBidId(){
 
 void bid::setBidId(int id){
     bidId = id;
+}
+
+int bid::getBidQuantity(){
+    return bidQuantity;
+}
+
+void bid::setBidQuantity(int quantity){
+    bidQuantity = quantity;
 }
 
 char bid::getBidType(){
