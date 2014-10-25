@@ -16,10 +16,15 @@ void auctioneer::getBid(bid Bid){
     if(Bid.getBidType() == 'A'){
 	Bid.setBidId(sellerBids.size()+1);
 	sellerBids.push_back(Bid);
+	numBuyBids++;
+	cout << "Num Buy Buds: " << numBuyBids << endl;
+	
     }
     if(Bid.getBidType() == 'B'){
 	Bid.setBidId(sellerBids.size()+1);
 	buyerBids.push_back(Bid);
+	numSellBids++;
+	cout << "num sell bids: " << numSellBids << endl;
     }
 
 }
@@ -27,8 +32,8 @@ void auctioneer::getBid(bid Bid){
 void auctioneer::announceBids(){
     //find width of collumn
     // 19 is how many characters are in "Buyer Bids received" the set smallest width
-    signed int width = 19;
-    for(int i = buyerBids.size()-1; i>=0; i--){
+    unsigned int width = 19;
+    for(int i = numBuyBids-1; i>=0; i--){
 	if((buyerBids[i].getTraderName().size() + 6) > width){
 	    width = buyerBids[i].getTraderName().size() + 6;
 	}
@@ -37,7 +42,7 @@ void auctioneer::announceBids(){
     width++;
 
     cout << "Buyer Bids Received";
-    int currentPlace = 19;
+    unsigned int currentPlace = 19;
     //pad till edge of collumn
     while(currentPlace < width){
 	cout << " ";
@@ -52,8 +57,8 @@ void auctioneer::announceBids(){
     }
     cout << "+";
 
-    signed int tempWidth = 20;
-    for(int i = sellerBids.size()-1; i>=0; i--){
+    unsigned int tempWidth = 20;
+    for(int i = numSellBids-1; i>=0; i--){
 	if((sellerBids[i].getTraderName().size() + 6) > tempWidth){
 	    tempWidth = sellerBids[i].getTraderName().size() + 6;
 	}
@@ -65,7 +70,7 @@ void auctioneer::announceBids(){
     cout << endl;
     currentPlace = 0;
 
-    for(int buyersLeftToPrint = buyerBids.size()-1, sellersLeftToPrint = sellerBids.size()-1;
+    for(int buyersLeftToPrint = numBuyBids-1, sellersLeftToPrint = numSellBids-1;
 	buyersLeftToPrint >=0 || sellersLeftToPrint >=0;
 	buyersLeftToPrint--, sellersLeftToPrint--){
 	
@@ -142,6 +147,7 @@ void auctioneer::announceBids(){
 }
 
 void auctioneer::announceMatches(){
+    if(numMatches > 0){
     cout << "Matches Found\n";
     for(int i = matches.size()-1; i>=0; i--){
 	cout << "Buyer Name: " << matches[i].buyerName << endl
@@ -149,23 +155,27 @@ void auctioneer::announceMatches(){
 	     << "Clearing Price: " << matches[i].clearingPrice << endl
 	     << endl;
     }
+    } else {
+	cout << "No matches found" << endl;
+    }
 }
 
 void auctioneer::matchBids(){
-    int buyerMatchId = NUMBUYER;
+    int buyerMatchId = numBuyBids;
     bool foundBuyer = false;
     bool matchedAllPossible = false;
 
     while(matchedAllPossible == false){
 	matchedAllPossible = true;
 	//find the buyer with the highest price for each seller
-	for(int seller = numSellBids; seller >= 0; seller--){
-	    for(int buyer = numBuyBids; buyer >= 0; buyer--){
+	for(int seller = numSellBids-1; seller >= 0; seller--){
+	    for(int buyer = numBuyBids-1; buyer >= 0; buyer--){
 		if(sellerBids[seller].getBidPrice() <= buyerBids[buyer].getBidPrice()){
 		    if(buyerBids[buyer].getBidQuantity() <= sellerBids[seller].getBidQuantity()){
 			if(buyerBids[buyer].getBidPrice() > buyerBids[buyerMatchId].getBidPrice()){
 			    buyerMatchId = buyer;
-			    matchedAllPossible = foundBuyer = true;
+			    matchedAllPossible = false;
+			    foundBuyer = true;
 			}
 		    }
 		}
@@ -173,7 +183,6 @@ void auctioneer::matchBids(){
 		//for each buyer found add to matches
 		if(foundBuyer){
 		    numMatches++;
-
 
 		    //create the match structure and fill with infomation
 		    matchedBid newMatch;
@@ -195,11 +204,11 @@ void auctioneer::matchBids(){
 		    //remove the found matches from appropriate vecter if empty of all quantity
 		    if(buyerBids[buyerMatchId].getBidQuantity() < 1){
 			buyerBids.erase(buyerBids.begin() + buyerMatchId);
-			numBuyBids = numBuyBids - 1;
+			numBuyBids--;
 		    }
 		    if(sellerBids[seller].getBidQuantity() < 1){
 			sellerBids.erase(sellerBids.begin() + seller);
-			numSellBids = numSellBids - 1;
+			numSellBids--;
 
 		    }
 		    foundBuyer = false;
@@ -238,10 +247,10 @@ void auctioneer::addMoneyToEscrow(int matchId, int money){
     }
 }
 
-int auctioneer::removeMoneyFromEscrow(int matchId, std::string){
+double auctioneer::removeMoneyFromEscrow(int matchId, std::string){
     for(int i = escrowVector.size()-1; i>=0; i--){
 	if(escrowVector[i].matchId == matchId){
-	    int moneyToReturn = escrowVector[i].money;
+	    double moneyToReturn = escrowVector[i].money;
 	    escrowVector.erase(escrowVector.begin() + i);
 	    return moneyToReturn;
 	}

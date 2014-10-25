@@ -10,8 +10,8 @@
 
 class auctioneer {
 private:
-    int numBuyBids = NUMBUYER;
-    int numSellBids = NUMSELLER;
+    int numBuyBids = 0;
+    int numSellBids = 0;
     std::vector<bid> buyerBids;
     std::vector<bid> sellerBids;
 
@@ -33,7 +33,7 @@ public:
 
     void createEscrowAccount(int, std::string, std::string);
     void addMoneyToEscrow(int, int);
-    int removeMoneyFromEscrow(int, std::string);
+    double removeMoneyFromEscrow(int, std::string);
 };
 
 #endif

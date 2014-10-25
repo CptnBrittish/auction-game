@@ -11,8 +11,8 @@ class trader {
 private:
 std::string traderName;
 char traderType;
-int money;
-int moneyLeftForBids;
+double money;
+double moneyLeftForBids;
 
 std::vector<bid> traderBids;
 
@@ -25,7 +25,7 @@ trader(std::string, char);
 
 std::string getName();
 char getType();
-int getTraderMoney();
+double getTraderMoney();
 void setTraderMoney();
 
 std::vector<bid> generateBid();

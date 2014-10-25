@@ -9,17 +9,22 @@
 trader::trader(){
     traderName.assign(std::string("Temporary Name"));
     traderType = 'A';
-    money = moneyLeftForBids = rand() % (MAXPRICE - MINPRICE) + MINPRICE;
+    money = rand() % (MAXPRICE - MINPRICE) + MINPRICE;
+    moneyLeftForBids = money;
 }
 
 trader::trader(const char * name, char type){
     traderName.assign(std::string(name));
     traderType = type;
+    money = rand() % (MAXPRICE - MINPRICE) + MINPRICE;
+    moneyLeftForBids = money;
 }
 
 trader::trader(std::string name, char type){
     traderName.assign(name);
     traderType = type;
+    money = rand() % (MAXPRICE - MINPRICE) + MINPRICE;
+    moneyLeftForBids = money;
 }
 
 trader::~trader(){
@@ -36,9 +41,9 @@ char trader::getType(){
 std::vector<bid> trader::generateBid(){
     //We want to cap at ten bids set in limits.h
     for(int numBids = MAXBIDS; numBids>=0; numBids--){
-	if(moneyLeftForBids != 0){
+	if(int(moneyLeftForBids) >= 1){
 	    bid Bid;
-	    Bid.setBidPrice(rand() % moneyLeftForBids);
+	    Bid.setBidPrice(rand() % int(moneyLeftForBids));
 	
 	    // Reduce money left for bids
 	    moneyLeftForBids = moneyLeftForBids - Bid.getBidPrice();
