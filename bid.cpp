@@ -16,6 +16,7 @@ bid::bid(const bid& other){
     bidQuantity = other.bidQuantity;
     bidType = other.bidType;
     bidPrice = other.bidPrice;
+    itemName = other.itemName;
 }
 
 bid& bid::operator=(const bid& other){
@@ -24,6 +25,7 @@ bid& bid::operator=(const bid& other){
     bidQuantity = other.bidQuantity;
     bidType = other.bidType;
     bidPrice = other.bidPrice;
+    itemName = other.itemName;
     return *this;
 } 
 
@@ -69,6 +71,14 @@ double bid::getBidPrice(){
 
 void bid::setBidPrice(double price){
     bidPrice = price;
+}
+
+std::string bid::getItemName(){
+    return itemName;
+}
+
+void bid::setItemName(std::string name){
+    itemName = name;
 }
 
 bid::~bid(){

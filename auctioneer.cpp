@@ -77,6 +77,7 @@ void auctioneer::announceBids(){
 	int nameLength = 6;
 	int priceLength = 7;
 	int quantityLength = 10;
+	int itemLength = 6;
 	
 	//check we have buyers and sellers left to print before we continue
 	if(buyersLeftToPrint > -1){
@@ -93,8 +94,24 @@ void auctioneer::announceBids(){
 	}
 	cout << endl;
 	currentPlace = 0;
-
-
+    
+    
+	if(buyersLeftToPrint > -1){
+	    currentPlace = buyerBids[buyersLeftToPrint].getItemName().size() + itemLength;
+	    cout << "Item: " << buyerBids[buyersLeftToPrint].getItemName();
+	}
+	while(currentPlace < width){
+	    cout << " ";
+	    currentPlace++;
+	}
+	cout << "| ";
+	if(sellersLeftToPrint > -1){
+	    cout << "Item: " << sellerBids[sellersLeftToPrint].getItemName();
+	}
+	cout << endl;
+	
+	currentPlace = 0;
+	
 	if(buyersLeftToPrint > -1){
 	    int number = buyerBids[buyersLeftToPrint].getBidPrice();
 	    while (number) {
@@ -148,13 +165,13 @@ void auctioneer::announceBids(){
 
 void auctioneer::announceMatches(){
     if(numMatches > 0){
-    cout << "Matches Found\n";
-    for(int i = matches.size()-1; i>=0; i--){
-	cout << "Buyer Name: " << matches[i].buyerName << endl
-	     << "Seller Name: " << matches[i].sellerName << endl
-	     << "Clearing Price: " << matches[i].clearingPrice << endl
-	     << endl;
-    }
+	cout << "Matches Found\n";
+	for(int i = matches.size()-1; i>=0; i--){
+	    cout << "Buyer Name: " << matches[i].buyerName << endl
+		 << "Seller Name: " << matches[i].sellerName << endl
+		 << "Clearing Price: " << matches[i].clearingPrice << endl
+		 << endl;
+	}
     } else {
 	cout << "No matches found" << endl;
     }
@@ -170,16 +187,19 @@ void auctioneer::matchBids(){
 	//find the buyer with the highest price for each seller
 	for(int seller = numSellBids-1; seller >= 0; seller--){
 	    for(int buyer = numBuyBids-1; buyer >= 0; buyer--){
-		if(sellerBids[seller].getBidPrice() <= buyerBids[buyer].getBidPrice()){
-		    if(buyerBids[buyer].getBidQuantity() <= sellerBids[seller].getBidQuantity()){
-			if(buyerBids[buyer].getBidPrice() > buyerBids[buyerMatchId].getBidPrice()){
-			    buyerMatchId = buyer;
-			    matchedAllPossible = false;
-			    foundBuyer = true;
+		
+		if(sellerBids[seller].getItemName().compare(buyerBids[buyer].getItemName())){
+		    if(sellerBids[seller].getBidPrice() <= buyerBids[buyer].getBidPrice()){
+			if(buyerBids[buyer].getBidQuantity() <= sellerBids[seller].getBidQuantity()){
+			    if(buyerBids[buyer].getBidPrice() > buyerBids[buyerMatchId].getBidPrice()){
+				buyerMatchId = buyer;
+				matchedAllPossible = false;
+				foundBuyer = true;
+			    }
 			}
 		    }
 		}
-
+		
 		//for each buyer found add to matches
 		if(foundBuyer){
 		    numMatches++;
@@ -192,6 +212,7 @@ void auctioneer::matchBids(){
 		    newMatch.clearingPrice = clearBids(&sellerBids[seller], &buyerBids[buyerMatchId]);
 		    newMatch.quantity = buyerBids[buyerMatchId].getBidQuantity();
 		    newMatch.matchId = numMatches;
+		    newMatch.itemName = sellerBids[seller].getItemName();
 
 		    matches.push_back(newMatch);
 

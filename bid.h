@@ -8,8 +8,13 @@ private:
     std::string traderName;
     int bidId;
     int bidQuantity;
+    /*
+     * A = seller
+     * B = buyer
+     */
     char bidType;
     double bidPrice;
+    std::string itemName;
 
 public:
     std::string getTraderName();
@@ -27,6 +32,9 @@ public:
 
     double getBidPrice();
     void setBidPrice(double);
+
+    std::string getItemName();
+    void setItemName(std::string);
 
     bid();
     bid(const bid&);

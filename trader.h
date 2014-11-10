@@ -3,6 +3,7 @@
 
 #include "bid.h"
 #include "match.h"
+#include "inventory.h"
 
 #include <string>
 #include <vector>
@@ -10,12 +11,19 @@
 class trader {
 private:
 std::string traderName;
+/*
+ * A = seller
+ * B = buyer
+ */
 char traderType;
 double money;
 double moneyLeftForBids;
 
+std::vector<matchedBid> matchedBids;
+std::vector<item> inventory;
 std::vector<bid> traderBids;
 
+void condenseInventory();
 
 public:
 trader();
@@ -29,12 +37,12 @@ double getTraderMoney();
 void setTraderMoney();
 
 std::vector<bid> generateBid();
-std::vector<matchedBid> matchedBids;
 
 void getMatchedBid(matchedBid);
 
 int sendMoneyToEscrow(int);
 void getMoneyFromEscrow(int, int);
+
 };
 
 #endif
