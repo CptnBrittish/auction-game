@@ -6,12 +6,16 @@
 #include "bid.h"
 #include "limits.h"
 #include "match.h"
+#include "player.h"
+
+#include <memory>
 #include <vector>
 
 class simulator {
 private:
     static const int NUMTRADERS = NUMBUYER + NUMSELLER;
     std::vector<trader> Traders;
+    player Player;
     auctioneer auctionMaster;
     std::vector<bid> Bid;
     std::vector<matchedBid> matchedBids;

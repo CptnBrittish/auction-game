@@ -32,9 +32,15 @@ trader(std::string, char);
 ~trader();
 
 std::string getName();
+void setTraderName(std::string);
+
 char getType();
+
 double getTraderMoney();
-void setTraderMoney();
+void setTraderMoney(double);
+
+void setMoneyLeft(double);
+double getMoneyLeft();
 
 std::vector<bid> generateBid();
 

@@ -47,6 +47,28 @@ std::string trader::getName(){
     return traderName;
 }
 
+void trader::setTraderName(std::string name){
+    traderName.assign(name);
+}
+
+void trader::setTraderMoney(double newMoney){
+    money = newMoney;
+}
+
+
+double trader::getTraderMoney(){
+    return money;
+}
+
+void trader::setMoneyLeft(double newMoney){
+    moneyLeftForBids = newMoney;
+}
+
+double trader::getMoneyLeft(){
+    return moneyLeftForBids;
+}
+
+
 char trader::getType(){
     return traderType;
 }

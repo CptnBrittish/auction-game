@@ -1,7 +1,9 @@
 #include "simulator.h"
 #include "trader.h"
 #include "match.h"
+#include "player.h"
 
+#include <memory>
 #include <vector>
 
 simulator::simulator(){
@@ -27,6 +29,7 @@ simulator::simulator(){
     Traders.push_back(trader("John Cuthill", 'B'));
     Traders.push_back(trader("Caitlin Langerak", 'B'));
     Traders.push_back(trader("Emily Abbott", 'B'));
+
 }
 
 simulator::~simulator(){
@@ -42,11 +45,16 @@ void simulator::runSimulator(){
 
 void simulator::collectBids(){
     //for each trader we need to collect bids and add them to our array of bids
-    for(int i = NUMTRADERS-1; i >=0; i--){
+    for(int i = Traders.size()-1; i >=0; i--){
 	std::vector<bid> traderBids = Traders[i].generateBid();
 	for(int i = traderBids.size()-1; i>=0; i--){
 	    Bid.push_back(traderBids[i]);
 	}
+    }
+    std::vector<bid> playerBid = Player.generateBid();
+    for(int i = playerBid.size()-1; i >=0; i--){
+	Bid.push_back(playerBid[i]);
+		     
     }
 }
 
@@ -71,8 +79,14 @@ void simulator::getAndDistributeMatches(){
 	    if(matchedBids[j].buyerName == Traders[i].getName()){
 		Traders[i].getMatchedBid(matchedBids[j]);
 	    }
+	    if(matchedBids[j].buyerName == Player.getName()){
+		Player.getMatchedBid(matchedBids[j]);
+	    }
 	    if(matchedBids[j].sellerName == Traders[i].getName()){
 		Traders[i].getMatchedBid(matchedBids[j]);
+	    }
+	    if(matchedBids[j].sellerName == Player.getName()){
+		Player.getMatchedBid(matchedBids[j]);
 	    }
 	}
     }
@@ -86,6 +100,9 @@ void simulator::getEscrowMoney(){
 		auctionMaster.addMoneyToEscrow(Traders[j].sendMoneyToEscrow(matchedBids[i].matchId), matchedBids[i].matchId);
 	    }
 	}
+	if(matchedBids[i].buyerName == Player.getName()){
+	    auctionMaster.addMoneyToEscrow(Player.sendMoneyToEscrow(matchedBids[i].matchId), matchedBids[i].matchId);
+	}
     }
 }
 
@@ -98,5 +115,10 @@ void simulator::distributeEscrowMoney(){
 		matchedBids.erase(matchedBids.begin() + i);
 	    }
 	}
+	if(matchedBids[i].sellerName == Player.getName()){
+		Player.getMoneyFromEscrow(auctionMaster.removeMoneyFromEscrow(matchedBids[i].matchId, matchedBids[i].sellerName),
+					     matchedBids[i].matchId);
+		matchedBids.erase(matchedBids.begin() + i);
+	    }
     }
 }
