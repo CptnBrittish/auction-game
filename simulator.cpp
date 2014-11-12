@@ -2,6 +2,7 @@
 #include "trader.h"
 #include "match.h"
 #include "player.h"
+#include "display.h"
 
 #include <memory>
 #include <vector>
@@ -64,17 +65,16 @@ void simulator::distributeBids(){
 	bid bidToPass = Bid[i];
 	auctionMaster.getBid(bidToPass);
     }
-    auctionMaster.announceBids();
+    showBids(auctionMaster.getBuyerBids(), auctionMaster.getSellerBids());
 }
 
 void simulator::getAndDistributeMatches(){
     auctionMaster.matchBids();
-    auctionMaster.announceMatches();
     //Get matches from auctionmaster
     matchedBids = auctionMaster.distributeMatches();
-
+    showMatches(matchedBids);
     //send match to the trader
-    for(int j = auctionMaster.getNumMatches()-1; j >= 0; j--){
+    for(int j = matchedBids.size()-1; j >= 0; j--){
 	for(int i = NUMTRADERS-1; i >= 0; i--){
 	    if(matchedBids[j].buyerName == Traders[i].getName()){
 		Traders[i].getMatchedBid(matchedBids[j]);

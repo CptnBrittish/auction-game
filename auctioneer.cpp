@@ -29,164 +29,16 @@ void auctioneer::getBid(bid Bid){
 
 }
 
-void auctioneer::announceBids(){
-    //find width of collumn
-    // 19 is how many characters are in "Buyer Bids received" the set smallest width
-    unsigned int width = 19;
-    for(int i = numBuyBids-1; i>=0; i--){
-	if((buyerBids[i].getTraderName().size() + 6) > width){
-	    width = buyerBids[i].getTraderName().size() + 6;
-	}
-    }
-    //Add space for readability
-    width++;
-
-    cout << "Buyer Bids Received";
-    unsigned int currentPlace = 19;
-    //pad till edge of collumn
-    while(currentPlace < width){
-	cout << " ";
-	currentPlace++;
-    }
-    currentPlace = 0;
-    cout << "| ";
-    cout << "Seller Bids Received\n";
-
-    for(currentPlace = 0; currentPlace < width; currentPlace++){
-	cout << "-";
-    }
-    cout << "+";
-
-    unsigned int tempWidth = 20;
-    for(int i = numSellBids-1; i>=0; i--){
-	if((sellerBids[i].getTraderName().size() + 6) > tempWidth){
-	    tempWidth = sellerBids[i].getTraderName().size() + 6;
-	}
-    }    
-    currentPlace = 0;
-    for(currentPlace = 0; currentPlace < tempWidth; currentPlace++){
-	cout << "-";
-    }
-    cout << endl;
-    currentPlace = 0;
-
-    for(int buyersLeftToPrint = numBuyBids-1, sellersLeftToPrint = numSellBids-1;
-	buyersLeftToPrint >=0 || sellersLeftToPrint >=0;
-	buyersLeftToPrint--, sellersLeftToPrint--){
-	
-	int nameLength = 6;
-	int priceLength = 7;
-	int quantityLength = 10;
-	int itemLength = 6;
-	
-	//check we have buyers and sellers left to print before we continue
-	if(buyersLeftToPrint > -1){
-	    currentPlace = nameLength + buyerBids[buyersLeftToPrint].getTraderName().size();
-	    cout << "Name: " << buyerBids[buyersLeftToPrint].getTraderName();
-	}
-	while(currentPlace < width){
-	    cout << " ";
-	    currentPlace++;
-	}
-	cout << "| ";
-	if(sellersLeftToPrint > -1){
-	    cout << "Name: " << sellerBids[sellersLeftToPrint].getTraderName();
-	}
-	cout << endl;
-	currentPlace = 0;
-    
-    
-	if(buyersLeftToPrint > -1){
-	    currentPlace = buyerBids[buyersLeftToPrint].getItemName().size() + itemLength;
-	    cout << "Item: " << buyerBids[buyersLeftToPrint].getItemName();
-	}
-	while(currentPlace < width){
-	    cout << " ";
-	    currentPlace++;
-	}
-	cout << "| ";
-	if(sellersLeftToPrint > -1){
-	    cout << "Item: " << sellerBids[sellersLeftToPrint].getItemName();
-	}
-	cout << endl;
-	
-	currentPlace = 0;
-	
-	if(buyersLeftToPrint > -1){
-	    int number = buyerBids[buyersLeftToPrint].getBidPrice();
-	    while (number) {
-		number /= 10;
-		currentPlace++;
-	    }
-	    currentPlace = currentPlace + priceLength;
-	    cout << "Price: " << buyerBids[buyersLeftToPrint].getBidPrice();
-	}
-	while(currentPlace < width){
-	    cout << " ";
-	    currentPlace++;
-	}
-	cout << "| ";
-	if(sellersLeftToPrint > -1){
-	    cout << "Price: " << sellerBids[sellersLeftToPrint].getBidPrice();
-	}
-	cout << endl;
-	
-	currentPlace = 0;
-
-	if(buyersLeftToPrint > -1){
-	    int number = buyerBids[buyersLeftToPrint].getBidQuantity();
-	    while (number) {
-		number /= 10;
-		currentPlace++;
-	    } 
-	    currentPlace = currentPlace + quantityLength;
-	    cout << "Quantity: " << buyerBids[buyersLeftToPrint].getBidQuantity();
-	}
-	while(currentPlace < width){
-	    cout << " ";
-	    currentPlace++;
-	}
-	cout << "| ";
-	if(sellersLeftToPrint > -1){
-	    cout << "Quantity: " << sellerBids[sellersLeftToPrint].getBidQuantity();
-	} 
-	cout << endl;
-	
-	currentPlace  = 0;
-	while(currentPlace < width){
-	    cout << " ";
-	    currentPlace++;
-	}
-	cout << "|" << endl;
-
-    }
-
-}
-
-void auctioneer::announceMatches(){
-    if(numMatches > 0){
-	cout << "Matches Found\n";
-	for(int i = matches.size()-1; i>=0; i--){
-	    cout << "Buyer Name: " << matches[i].buyerName << endl
-		 << "Seller Name: " << matches[i].sellerName << endl
-		 << "Clearing Price: " << matches[i].clearingPrice << endl
-		 << endl;
-	}
-    } else {
-	cout << "No matches found" << endl;
-    }
-}
-
 void auctioneer::matchBids(){
-    int buyerMatchId = numBuyBids;
+    int buyerMatchId = buyerBids.size()-1;
     bool foundBuyer = false;
     bool matchedAllPossible = false;
 
     while(matchedAllPossible == false){
 	matchedAllPossible = true;
 	//find the buyer with the highest price for each seller
-	for(int seller = numSellBids-1; seller >= 0; seller--){
-	    for(int buyer = numBuyBids-1; buyer >= 0; buyer--){
+	for(int seller = sellerBids.size()-1; seller >= 0; seller--){
+	    for(int buyer = buyerBids.size()-1; buyer >= 0; buyer--){
 		
 		if(sellerBids[seller].getItemName().compare(buyerBids[buyer].getItemName())){
 		    if(sellerBids[seller].getBidPrice() <= buyerBids[buyer].getBidPrice()){
@@ -277,4 +129,13 @@ double auctioneer::removeMoneyFromEscrow(int matchId, std::string){
 	}
     }
     return -1;
+}
+
+
+std::vector<bid> auctioneer::getBuyerBids(){
+    return buyerBids;
+}
+
+std::vector<bid> auctioneer::getSellerBids(){
+    return sellerBids;
 }

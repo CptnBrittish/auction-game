@@ -34,6 +34,9 @@ public:
     void createEscrowAccount(int, std::string, std::string);
     void addMoneyToEscrow(int, int);
     double removeMoneyFromEscrow(int, std::string);
+
+    std::vector<bid> getBuyerBids();
+    std::vector<bid> getSellerBids();
 };
 
 #endif
