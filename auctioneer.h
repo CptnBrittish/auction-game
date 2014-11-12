@@ -10,20 +10,17 @@
 
 class auctioneer {
 private:
-    int numBuyBids = 0;
-    int numSellBids = 0;
     std::vector<bid> buyerBids;
     std::vector<bid> sellerBids;
 
     std::vector<matchedBid> matches;
-    int numMatches = 0;
 
     std::vector<escrow> escrowVector;
+    
 public:
     auctioneer();
     ~auctioneer();
 
-    int getNumMatches();
     void announceBids();
     void announceMatches();
     void getBid(bid);

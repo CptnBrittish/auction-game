@@ -16,12 +16,10 @@ void auctioneer::getBid(bid Bid){
     if(Bid.getBidType() == 'A'){
 	Bid.setBidId(sellerBids.size()+1);
 	sellerBids.push_back(Bid);
-	numBuyBids++;
     }
     if(Bid.getBidType() == 'B'){
 	Bid.setBidId(sellerBids.size()+1);
 	buyerBids.push_back(Bid);
-	numSellBids++;
     }
 
 }
@@ -51,7 +49,6 @@ void auctioneer::matchBids(){
 		
 		//for each buyer found add to matches
 		if(foundBuyer){
-		    numMatches++;
 
 		    //create the match structure and fill with infomation
 		    matchedBid newMatch;
@@ -60,7 +57,7 @@ void auctioneer::matchBids(){
 		    newMatch.sellerName = sellerBids[seller].getTraderName();
 		    newMatch.clearingPrice = clearBids(&sellerBids[seller], &buyerBids[buyerMatchId]);
 		    newMatch.quantity = buyerBids[buyerMatchId].getBidQuantity();
-		    newMatch.matchId = numMatches;
+		    newMatch.matchId = matches.size();
 		    newMatch.itemName = sellerBids[seller].getItemName();
 
 		    matches.push_back(newMatch);
@@ -74,11 +71,9 @@ void auctioneer::matchBids(){
 		    //remove the found matches from appropriate vecter if empty of all quantity
 		    if(buyerBids[buyerMatchId].getBidQuantity() < 1){
 			buyerBids.erase(buyerBids.begin() + buyerMatchId);
-			numBuyBids--;
 		    }
 		    if(sellerBids[seller].getBidQuantity() < 1){
 			sellerBids.erase(sellerBids.begin() + seller);
-			numSellBids--;
 
 		    }
 		    foundBuyer = false;
@@ -93,9 +88,6 @@ double auctioneer::clearBids(bid *seller, bid *buyer){
    
 }
 
-int auctioneer::getNumMatches(){
-    return numMatches;
-}
 
 std::vector<matchedBid> auctioneer::distributeMatches(){
     return matches;
