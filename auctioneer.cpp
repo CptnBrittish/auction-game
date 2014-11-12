@@ -17,14 +17,11 @@ void auctioneer::getBid(bid Bid){
 	Bid.setBidId(sellerBids.size()+1);
 	sellerBids.push_back(Bid);
 	numBuyBids++;
-	cout << "Num Buy Buds: " << numBuyBids << endl;
-	
     }
     if(Bid.getBidType() == 'B'){
 	Bid.setBidId(sellerBids.size()+1);
 	buyerBids.push_back(Bid);
 	numSellBids++;
-	cout << "num sell bids: " << numSellBids << endl;
     }
 
 }
