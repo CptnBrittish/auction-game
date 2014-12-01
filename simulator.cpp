@@ -3,37 +3,66 @@
 #include "match.h"
 #include "player.h"
 #include "display.h"
+#include "limits.h"
 
 #include <memory>
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <stdlib.h>
 
 simulator::simulator(){
+    std::vector<std::string> firstNames;
+    std::vector<std::string> lastNames;
+    //Read from trader name file once for info
+    std::ifstream traderNameFile;
+    traderNameFile.open("traderNames");
+    std::string line;
+    while(std::getline(traderNameFile, line)){
+	if(line[0] == ':'){
+	    if(line == ":first"){
+		while(line != ":start"){
+		    getline(traderNameFile,line);
+		}
+		getline(traderNameFile, line);
+		while(line != ":end"){
+		    firstNames.push_back(line);
+		    std::cout << line << std::endl;
+		    std::getline(traderNameFile, line);
+		}
+	    }
+	    std::cout << "End first names" << std::endl;
+	    if(line == ":last"){
+		while(line != ":start"){
+		    getline(traderNameFile,line);
+		}
+		getline(traderNameFile,line);
+		while(line != ":end"){
+		    lastNames.push_back(line);
+		    std::cout << line << std::endl;
+		    std::getline(traderNameFile, line);
+		}
+	    }
+	}
+    }
+
     //Add the trader information here
-    Traders.push_back(trader("Thomas Atkinson", 'A'));
-    Traders.push_back(trader("Thomas Quinn", 'A'));
-    Traders.push_back(trader("Tori Clarke", 'A'));
-    Traders.push_back(trader("Jarrod Briggs", 'A'));
-    Traders.push_back(trader("James Lynch", 'A'));
-    Traders.push_back(trader("Micheal Selby", 'A'));
-    Traders.push_back(trader("Tegan Leahy", 'A'));
-    Traders.push_back(trader("Kiani Denoord", 'A'));
-    Traders.push_back(trader("Lenny Nesbit", 'A'));
-    Traders.push_back(trader("Maria Nesbit", 'A'));
+    for(int numBuyers = NUMBUYER; numBuyers >= 1; numBuyers--){
+	Traders.push_back(trader(getTraderName(firstNames, lastNames), 'B'));
+    }
 
-    Traders.push_back(trader("Ben Atkinson", 'B'));
-    Traders.push_back(trader("Sam Kennedy", 'B'));
-    Traders.push_back(trader("Chriss Quinn", 'B'));
-    Traders.push_back(trader("John Smith", 'B'));
-    Traders.push_back(trader("Tim Drummond", 'B'));
-    Traders.push_back(trader("Ryan Hinton", 'B'));
-    Traders.push_back(trader("Katherine Pettit", 'B'));
-    Traders.push_back(trader("John Cuthill", 'B'));
-    Traders.push_back(trader("Caitlin Langerak", 'B'));
-    Traders.push_back(trader("Emily Abbott", 'B'));
-
+    for(int numSellers = NUMSELLER; numSellers >= 1; numSellers--){
+	Traders.push_back(trader(getTraderName(firstNames, lastNames), 'A'));
+    }
+    traderNameFile.close();
 }
 
 simulator::~simulator(){
+}
+
+std::string simulator::getTraderName(std::vector<std::string> &firstNames, std::vector<std::string> &lastNames){
+    return firstNames[rand() % (firstNames.size()-1)] + " " + lastNames[rand() % (lastNames.size()-1)];
 }
 
 void simulator::runSimulator(){
@@ -111,14 +140,14 @@ void simulator::distributeEscrowMoney(){
 	for(int j = Traders.size()-1; j >= 0; j--){
 	    if(matchedBids[i].sellerName == Traders[j].getName()){
 		Traders[j].getMoneyFromEscrow(auctionMaster.removeMoneyFromEscrow(matchedBids[i].matchId, matchedBids[i].sellerName),
-					     matchedBids[i].matchId);
+					      matchedBids[i].matchId);
 		matchedBids.erase(matchedBids.begin() + i);
 	    }
 	}
 	if(matchedBids[i].sellerName == Player.getName()){
-		Player.getMoneyFromEscrow(auctionMaster.removeMoneyFromEscrow(matchedBids[i].matchId, matchedBids[i].sellerName),
-					     matchedBids[i].matchId);
-		matchedBids.erase(matchedBids.begin() + i);
-	    }
+	    Player.getMoneyFromEscrow(auctionMaster.removeMoneyFromEscrow(matchedBids[i].matchId, matchedBids[i].sellerName),
+				      matchedBids[i].matchId);
+	    matchedBids.erase(matchedBids.begin() + i);
+	}
     }
 }

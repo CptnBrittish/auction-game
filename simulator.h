@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 class simulator {
 private:
@@ -19,6 +20,7 @@ private:
     auctioneer auctionMaster;
     std::vector<bid> Bid;
     std::vector<matchedBid> matchedBids;
+    std::string getTraderName(std::vector<std::string>&, std::vector<std::string>&);
  
 
 public:
