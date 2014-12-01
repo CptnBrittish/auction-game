@@ -1,6 +1,7 @@
 #include "display.h"
 #include "match.h"
 #include "bid.h"
+#include "item.h"
 
 #include <vector>
 #include <iostream>
@@ -67,15 +68,15 @@ void showBids(std::vector<bid> buyerBids, std::vector<bid> sellerBids){
     
     
 	if(buyersLeftToPrint > -1){
-	    currentPlace = buyerBids[buyersLeftToPrint].getItemName().size() + itemLength;
-	    std::cout << "Item: " << buyerBids[buyersLeftToPrint].getItemName();
+	    currentPlace = getItemName(buyerBids[buyersLeftToPrint].getItemNo()).size() + itemLength;
+	    std::cout << "Item: " << getItemName(buyerBids[buyersLeftToPrint].getItemNo());
 	}
 	
 	fillToEndOfCollumn(currentPlace, width);
 	
 	std::cout << "| ";
 	if(sellersLeftToPrint > -1){
-	    std::cout << "Item: " << sellerBids[sellersLeftToPrint].getItemName();
+	    std::cout << "Item: " << getItemName(sellerBids[sellersLeftToPrint].getItemNo());
 	}
 	std::cout << std::endl;
 	

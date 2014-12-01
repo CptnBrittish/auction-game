@@ -8,7 +8,7 @@ struct matchedBid {
     int matchId;
     std::string sellerName;
     std::string buyerName;
-    std::string itemName;
+    std::string itemNo;
     int quantity;
     double clearingPrice;
 };

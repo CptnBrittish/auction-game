@@ -14,7 +14,8 @@ private:
      */
     char bidType;
     double bidPrice;
-    std::string itemName;
+    //This will be translated to the itemName on display
+    int itemNo;
 
 public:
     std::string getTraderName();
@@ -33,8 +34,8 @@ public:
     double getBidPrice();
     void setBidPrice(double);
 
-    std::string getItemName();
-    void setItemName(std::string);
+    int getItemNo();
+    void setItemNo(int);
 
     bid();
     bid(const bid&);

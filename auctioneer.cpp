@@ -4,8 +4,6 @@
 
 #include <iostream>
 
-using namespace std;
-
 auctioneer::auctioneer(){
 }
 
@@ -13,32 +11,55 @@ auctioneer::~auctioneer(){
 }
 
 void auctioneer::getBid(bid Bid){
-    if(Bid.getBidType() == 'A'){
-	Bid.setBidId(sellerBids.size()+1);
-	sellerBids.push_back(Bid);
+    bool bidItemExists = false;
+    numBids++;
+    for(int i = bidItem.size()-1; i>=0; i--){
+	
+	if(Bid.getItemNo() == bidItem[i]->item){
+	    if(Bid.getBidType() == 'A'){
+		Bid.setBidId(numBids);
+		bidItem[i]->sellerBids.push_back(Bid);
+	    }
+	    if(Bid.getBidType() == 'B'){
+		Bid.setBidId(numBids);
+		bidItem[i]->buyerBids.push_back(Bid);
+	    }
+	    bidItemExists = true;
+	}
     }
-    if(Bid.getBidType() == 'B'){
-	Bid.setBidId(sellerBids.size()+1);
-	buyerBids.push_back(Bid);
-    }
+    if(!bidItemExists){
+	std::unique_ptr<buyerAndSellerBids> newItemType(new buyerAndSellerBids(Bid.getItemNo()));
+	bidItem.push_back(std::move(newItemType));
 
+	if(Bid.getBidType() == 'A'){
+	    Bid.setBidId(numBids);
+	    bidItem[bidItem.size()-1]->sellerBids.push_back(Bid);
+	}
+	if(Bid.getBidType() == 'B'){
+	    Bid.setBidId(numBids);
+	    bidItem[bidItem.size()-1]->buyerBids.push_back(Bid);
+	}
+    }
 }
+   
+    
 
 void auctioneer::matchBids(){
-    int buyerMatchId = buyerBids.size()-1;
-    bool foundBuyer = false;
-    bool matchedAllPossible = false;
+    for(int i = bidItem.size()-1; i >= 0; i--){
+	int buyerMatchId = bidItem[i]->buyerBids.size()-1;
+	bool foundBuyer = false;
+	bool matchedAllPossible = false;
 
-    while(matchedAllPossible == false){
-	matchedAllPossible = true;
-	//find the buyer with the highest price for each seller
-	for(int seller = sellerBids.size()-1; seller >= 0; seller--){
-	    for(int buyer = buyerBids.size()-1; buyer >= 0; buyer--){
-		
-		if(sellerBids[seller].getItemName().compare(buyerBids[buyer].getItemName())){
-		    if(sellerBids[seller].getBidPrice() <= buyerBids[buyer].getBidPrice()){
-			if(buyerBids[buyer].getBidQuantity() <= sellerBids[seller].getBidQuantity()){
-			    if(buyerBids[buyer].getBidPrice() > buyerBids[buyerMatchId].getBidPrice()){
+	while(matchedAllPossible == false){
+	    matchedAllPossible = true;
+	    //find the buyer with the highest price for each seller
+	    for(int seller = bidItem[i]->sellerBids.size()-1; seller >= 0; seller--){
+		for(int buyer = bidItem[i]->buyerBids.size()-1; buyer >= 0; buyer--){
+
+		    if(bidItem[i]->sellerBids[seller].getBidPrice() <= bidItem[i]->buyerBids[buyer].getBidPrice()){
+			//if buyer wants less or equal to number avaliable continue
+			if(bidItem[i]->buyerBids[buyer].getBidQuantity() <= bidItem[i]->sellerBids[seller].getBidQuantity()){
+			    if(bidItem[i]->buyerBids[buyer].getBidPrice() > bidItem[i]->buyerBids[buyerMatchId].getBidPrice()){
 				buyerMatchId = buyer;
 				matchedAllPossible = false;
 				foundBuyer = true;
@@ -46,19 +67,19 @@ void auctioneer::matchBids(){
 			}
 		    }
 		}
-		
 		//for each buyer found add to matches
+		//runs after we have finished the buyer for loop
 		if(foundBuyer){
 
 		    //create the match structure and fill with infomation
 		    matchedBid newMatch;
-		    newMatch.bidId = sellerBids[seller].getBidId();
-		    newMatch.buyerName = buyerBids[buyerMatchId].getTraderName();
-		    newMatch.sellerName = sellerBids[seller].getTraderName();
-		    newMatch.clearingPrice = clearBids(&sellerBids[seller], &buyerBids[buyerMatchId]);
-		    newMatch.quantity = buyerBids[buyerMatchId].getBidQuantity();
+		    newMatch.bidId = bidItem[i]->sellerBids[seller].getBidId();
+		    newMatch.buyerName = bidItem[i]->buyerBids[buyerMatchId].getTraderName();
+		    newMatch.sellerName = bidItem[i]->sellerBids[seller].getTraderName();
+		    newMatch.clearingPrice = clearBids(&bidItem[i]->sellerBids[seller], &bidItem[i]->buyerBids[buyerMatchId]);
+		    newMatch.quantity = bidItem[i]->buyerBids[buyerMatchId].getBidQuantity();
 		    newMatch.matchId = matches.size();
-		    newMatch.itemName = sellerBids[seller].getItemName();
+		    newMatch.itemNo = bidItem[i]->sellerBids[seller].getItemNo();
 
 		    matches.push_back(newMatch);
 
@@ -66,14 +87,14 @@ void auctioneer::matchBids(){
 		    createEscrowAccount(newMatch.matchId, newMatch.sellerName, newMatch.buyerName);
 		    
 		    //remove quantity from both bidder and seller
-		    sellerBids[seller].setBidQuantity(sellerBids[seller].getBidQuantity()-buyerBids[buyerMatchId].getBidQuantity());
-		    buyerBids[buyerMatchId].setBidQuantity(0);
+		    bidItem[i]->sellerBids[seller].setBidQuantity(bidItem[i]->sellerBids[seller].getBidQuantity() - bidItem[i]->buyerBids[buyerMatchId].getBidQuantity());
+		    bidItem[i]->buyerBids[buyerMatchId].setBidQuantity(0);
 		    //remove the found matches from appropriate vecter if empty of all quantity
-		    if(buyerBids[buyerMatchId].getBidQuantity() < 1){
-			buyerBids.erase(buyerBids.begin() + buyerMatchId);
+		    if(bidItem[i]->buyerBids[buyerMatchId].getBidQuantity() < 1){
+			bidItem[i]->buyerBids.erase(bidItem[i]->buyerBids.begin() + buyerMatchId);
 		    }
-		    if(sellerBids[seller].getBidQuantity() < 1){
-			sellerBids.erase(sellerBids.begin() + seller);
+		    if(bidItem[i]->sellerBids[seller].getBidQuantity() < 1){
+			bidItem[i]->sellerBids.erase(bidItem[i]->sellerBids.begin() + seller);
 
 		    }
 		    foundBuyer = false;
@@ -82,6 +103,7 @@ void auctioneer::matchBids(){
 	}
     }
 }
+
 
 double auctioneer::clearBids(bid *seller, bid *buyer){
     return (double) ((buyer->getBidPrice())+(seller->getBidPrice()))/2;
@@ -122,9 +144,21 @@ double auctioneer::removeMoneyFromEscrow(int matchId, std::string){
 
 
 std::vector<bid> auctioneer::getBuyerBids(){
-    return buyerBids;
+    std::vector<bid> bidsToReturn;
+    for(int i = bidItem.size()-1; i >=0 ; i--){
+	for(int j = bidItem[i]->buyerBids.size()-1; j>=0; j--){
+	    bidsToReturn.push_back(bidItem[i]->buyerBids[j]);
+	}
+    }
+    return bidsToReturn;
 }
 
 std::vector<bid> auctioneer::getSellerBids(){
-    return sellerBids;
+    std::vector<bid> bidsToReturn;
+    for(int i = bidItem.size()-1; i >=0 ; i--){
+	for(int j = bidItem[i]->sellerBids.size()-1; j>=0; j--){
+	    bidsToReturn.push_back(bidItem[i]->sellerBids[j]);
+	}
+    }
+    return bidsToReturn;
 }

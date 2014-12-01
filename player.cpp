@@ -2,6 +2,7 @@
 #include "bid.h"
 #include "limits.h"
 #include "parseInput.h"
+#include "item.h"
 
 #include <iostream>
 #include <ctype.h>
@@ -49,17 +50,18 @@ std::vector<bid> player::generateBid(){
 	    }
 	}
 	newBid.setBidPrice(price);
-	
-	std::string name = "-1";
-	while(name == "-1"){
+
+	int nameNum = -1;
+	while(nameNum == -1){
 	    std::cout << "Set item name: ";
 	    getline(std::cin, input);
-	    name = validateIsAString(input);
-	    if(name == "-1"){
+	    input = validateIsAString(input);
+	    nameNum = getItemNum(input);
+	    if(nameNum == -1){
 		std::cout << "Invalid Input please try again\n";
 	    }
 	}
-	newBid.setItemName(name);
+	newBid.setItemNo(nameNum);
 
 	int quantity = -1;
 	while(quantity == -1){

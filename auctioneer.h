@@ -7,11 +7,22 @@
 #include "escrow.h"
 
 #include <vector>
+#include <memory>
+
+    class buyerAndSellerBids {
+    public:
+	std::vector<bid> buyerBids;
+	std::vector<bid> sellerBids;
+	int item;
+	buyerAndSellerBids(int itemNum){item = itemNum;};
+    };
 
 class auctioneer {
 private:
-    std::vector<bid> buyerBids;
-    std::vector<bid> sellerBids;
+
+    int numBids = 0;
+    
+    std::vector<std::unique_ptr<buyerAndSellerBids>> bidItem; 
 
     std::vector<matchedBid> matches;
 

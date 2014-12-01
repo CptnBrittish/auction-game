@@ -1,7 +1,7 @@
 #include "trader.h"
 #include "match.h"
 #include "limits.h"
-#include "item.h"
+#include "inventory.h"
 
 #include <string>
 #include <iostream>
@@ -23,8 +23,7 @@ trader::trader(const char * name, char type){
     if(traderType == 'A'){
 	for(int i = rand() % 3+1; i>=0; i--){
 	    item newItem;
-	    newItem.itemName = itemNameOptions[i];
-	    newItem.description = itemDescriptionOptions[i];
+	    newItem.itemNo = i;
 	    newItem.quantity = rand() % MAXBIDQUANTITY+1;
 
 	    inventory.push_back(newItem);
@@ -87,7 +86,7 @@ std::vector<bid> trader::generateBid(){
 		moneyLeftForBids = moneyLeftForBids - Bid.getBidPrice(); 	
 
 		//Add a item to bid for
-		Bid.setItemName(itemNameOptions[rand() % 3+1]);		
+		Bid.setItemNo(rand() % 3+1);		
 		
 		//cap bid quantity at 200
 		Bid.setBidQuantity(rand() % MAXBIDQUANTITY+1);		
@@ -104,7 +103,7 @@ std::vector<bid> trader::generateBid(){
 
 	    int inventoryItemToUse = rand() % (int)inventory.size();
 	    //Add a item to bid for
-	    Bid.setItemName(inventory[inventoryItemToUse].itemName); 	    
+	    Bid.setItemNo(inventory[inventoryItemToUse].itemNo); 	    
 	    Bid.setBidQuantity(rand() % inventory[inventoryItemToUse].quantity+1);
 	    
 	    Bid.setTraderName(traderName);
@@ -130,7 +129,7 @@ void trader::getMatchedBid(matchedBid matched){
     } else {
 	std::cout << "Matched with: " << matched.buyerName << std::endl;
     }
-    std::cout << "The Item of: " << matched.itemName << std::endl;
+    std::cout << "The Item of: " << matched.itemNo << std::endl;
     std::cout << "With a clearing price of: " << matched.clearingPrice << std::endl;
     std::cout << "For the quantity of: " << matched.quantity << std::endl
 	      << std::endl;
@@ -165,7 +164,7 @@ void trader::condenseInventory(){
 	for(int j = inventory.size()-1; i>=0; i--){
 	    if(i == j){
 		break;
-	    } else if(inventory[i].itemName == inventory[j].itemName){
+	    } else if(inventory[i].itemNo == inventory[j].itemNo){
 		inventory[i].quantity += inventory[j].quantity;
 		inventory.erase(inventory.begin() + j);
 	    }

@@ -48,7 +48,6 @@ void getMatchedBid(matchedBid);
 
 int sendMoneyToEscrow(int);
 void getMoneyFromEscrow(int, int);
-
 };
 
 #endif
