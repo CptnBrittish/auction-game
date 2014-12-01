@@ -21,7 +21,7 @@ trader::trader(const char * name, char type){
     moneyLeftForBids = money;
     //Add a random amount of inventory to the trader
     if(traderType == 'A'){
-	for(int i = rand() % 3+1; i>=0; i--){
+	for(int i = rand() % 3; i>=0; i--){
 	    item newItem;
 	    newItem.itemNo = i;
 	    newItem.quantity = rand() % MAXBIDQUANTITY+1;
@@ -37,6 +37,17 @@ trader::trader(std::string name, char type){
     traderType = type;
     money = rand() % (MAXPRICE - MINPRICE) + MINPRICE;
     moneyLeftForBids = money;
+    //Add a random amount of inventory to the trader
+    if(traderType == 'A'){
+	for(int i = rand() % 3; i>=0; i--){
+	    item newItem;
+	    newItem.itemNo = i;
+	    newItem.quantity = rand() % MAXBIDQUANTITY+1;
+
+	    inventory.push_back(newItem);
+	}
+	condenseInventory();
+    }
 }
 
 trader::~trader(){
@@ -100,10 +111,15 @@ std::vector<bid> trader::generateBid(){
 	} else {
 	    bid Bid;
 	    Bid.setBidPrice(rand() % int(moneyLeftForBids));
-
-	    int inventoryItemToUse = rand() % (int)inventory.size();
+	    int inventoryItemToUse;
+	    if(inventory.size() > 1){
+		inventoryItemToUse = rand() % (int)(inventory.size()-1);
+	    } else {
+		inventoryItemToUse = 0;
+	    }
 	    //Add a item to bid for
-	    Bid.setItemNo(inventory[inventoryItemToUse].itemNo); 	    
+	    Bid.setItemNo((int)inventory[inventoryItemToUse].itemNo);
+	    
 	    Bid.setBidQuantity(rand() % inventory[inventoryItemToUse].quantity+1);
 	    
 	    Bid.setTraderName(traderName);
