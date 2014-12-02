@@ -6,7 +6,11 @@
 #include <vector>
 #include <iostream>
 
-void showBids(std::vector<bid> buyerBids, std::vector<bid> sellerBids){
+display::display(items *Item){
+    itemTypes = Item;
+}
+
+void display::showBids(std::vector<bid> buyerBids, std::vector<bid> sellerBids){
     //find width of collumn
     // 19 is how many characters are in "Buyer Bids received" the set smallest width
     unsigned int width = 19;
@@ -68,15 +72,15 @@ void showBids(std::vector<bid> buyerBids, std::vector<bid> sellerBids){
     
     
 	if(buyersLeftToPrint > -1){
-	    currentPlace = getItemName(buyerBids[buyersLeftToPrint].getItemNo()).size() + itemLength;
-	    std::cout << "Item: " << getItemName(buyerBids[buyersLeftToPrint].getItemNo());
+	    currentPlace = itemTypes->getItemName(buyerBids[buyersLeftToPrint].getItemNo()).size() + itemLength;
+	    std::cout << "Item: " << itemTypes->getItemName(buyerBids[buyersLeftToPrint].getItemNo());
 	}
 	
 	fillToEndOfCollumn(currentPlace, width);
 	
 	std::cout << "| ";
 	if(sellersLeftToPrint > -1){
-	    std::cout << "Item: " << getItemName(sellerBids[sellersLeftToPrint].getItemNo());
+	    std::cout << "Item: " << itemTypes->getItemName(sellerBids[sellersLeftToPrint].getItemNo());
 	}
 	std::cout << std::endl;
 	
@@ -119,14 +123,14 @@ void showBids(std::vector<bid> buyerBids, std::vector<bid> sellerBids){
 
 }
 
-void fillToEndOfCollumn(int startPlace, int endPlace){
+void display::fillToEndOfCollumn(int startPlace, int endPlace){
 	while(startPlace < endPlace){
 	    std::cout << " ";
 	    startPlace++;
 	} 
 }
 
-int findCharacterLengthOfInt(int i){
+int display::findCharacterLengthOfInt(int i){
     int length;
     while (i) {
 	i /= 10;
@@ -135,7 +139,7 @@ int findCharacterLengthOfInt(int i){
     return length;
 }
 
-void showMatches(std::vector<matchedBid> matches){
+void display::showMatches(std::vector<matchedBid> matches){
     if(matches.size() > 0){
 	std::cout << "Matches Found\n";
 	for(int i = matches.size()-1; i>=0; i--){

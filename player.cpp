@@ -9,7 +9,9 @@
 #include <cstdlib>
 #include <string>
 
-player::player(){
+player::player(items *Item){
+    itemTypes = Item;
+    std::cout << itemTypes->getItemName(1);
     setTraderName(std::string("Player"));
     setTraderMoney(200);
     setMoneyLeft(getTraderMoney());
@@ -56,7 +58,7 @@ std::vector<bid> player::generateBid(){
 	    std::cout << "Set item name: ";
 	    getline(std::cin, input);
 	    input = validateIsAString(input);
-	    nameNum = getItemNum(input);
+	    nameNum = itemTypes->getItemNum(input);
 	    if(nameNum == -1){
 		std::cout << "Invalid Input please try again\n";
 	    }

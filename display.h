@@ -3,12 +3,21 @@
 
 #include "match.h"
 #include "bid.h"
+#include "item.h"
 
 #include <vector>
+class display{
+private:
+    items *itemTypes;
 
-void showMatches(std::vector<matchedBid>);
-void showBids(std::vector<bid>, std::vector<bid>);
-void fillToEndOfCollumn(int, int);
-int findCharacterLengthOfInt(int);
+    void fillToEndOfCollumn(int, int);
+    int findCharacterLengthOfInt(int);
 
+public:
+    void showMatches(std::vector<matchedBid>);
+    void showBids(std::vector<bid>, std::vector<bid>);
+
+    display(items*);
+    display(){};
+};
 #endif

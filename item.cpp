@@ -1,18 +1,45 @@
 #include "item.h"
-#include "itemNames.h"
 
 #include <string>
+#include <vector>
+#include <iostream>
+#include <fstream>
 
-std::string getItemName(int itemNo){
-    return itemNameOptions[itemNo];
+items::items(){
+    std::ifstream itemTypesFile;
+    itemTypesFile.open("items");
+    std::string line;
+    while(std::getline(itemTypesFile, line)){
+	item newItem;
+	if(line == ":start"){
+	    while(line != ":end"){
+		std::getline(itemTypesFile, line);
+		if(line == ":name"){
+		    std::getline(itemTypesFile, line);
+		    newItem.itemName = line;
+		    std::cout << "Item Name: " << line <<std::endl;
+		}
+		if(line == ":description"){
+		    std::getline(itemTypesFile, line);
+		    newItem.itemDescription = line;
+		}
+	    }
+	}
+	itemTypes.push_back(newItem);
+    }
+    itemTypesFile.close();
 }
 
-std::string getItemDescription(int itemNo){
-    return itemDescriptionOptions[itemNo];
+std::string items::getItemName(int itemNo){
+    return itemTypes[itemNo].itemName;
 }
 
-int getItemNum(std::string itemName){
-    for(int i = 4; i>=0; i--){
+std::string items::getItemDescription(int itemNo){
+    return itemTypes[itemNo].itemDescription;
+}
+
+int items::getItemNum(std::string itemName){
+    for(int i = itemTypes.size()-1; i>=0; i--){
 	if(getItemName(i) == itemName){
 	    return i;
 	}

@@ -1,0 +1,27 @@
+:start
+:name
+Wood
+:description
+A good cheap building material
+:end
+
+:start
+:name
+Weat
+:description
+Needed for scociety to eat
+:end
+
+:start
+:name
+Stone
+:description
+A expensive building material with large amounts of strengh
+:end
+
+:start
+:name
+Gold
+:description
+A rare resource used to convey status, also usefull in scientific endevors
+:end

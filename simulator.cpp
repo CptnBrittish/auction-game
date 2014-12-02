@@ -4,6 +4,7 @@
 #include "player.h"
 #include "display.h"
 #include "limits.h"
+#include "item.h"
 
 #include <memory>
 #include <vector>
@@ -13,6 +14,10 @@
 #include <stdlib.h>
 
 simulator::simulator(){
+    Display = new display(&Items);
+    Player = new player(&Items);
+    
+    //Get list of trader name options from file and then instantiate traders
     std::vector<std::string> firstNames;
     std::vector<std::string> lastNames;
     //Read from trader name file once for info
@@ -81,7 +86,7 @@ void simulator::collectBids(){
 	    Bid.push_back(traderBids[j]);
 	}
     }
-    std::vector<bid> playerBid = Player.generateBid();
+    std::vector<bid> playerBid = Player->generateBid();
     for(int i = playerBid.size()-1; i >=0; i--){
 	Bid.push_back(playerBid[i]);
 		     
@@ -94,28 +99,28 @@ void simulator::distributeBids(){
 	bid bidToPass = Bid[i];
 	auctionMaster.getBid(bidToPass);
     }
-    showBids(auctionMaster.getBuyerBids(), auctionMaster.getSellerBids());
+    Display->showBids(auctionMaster.getBuyerBids(), auctionMaster.getSellerBids());
 }
 
 void simulator::getAndDistributeMatches(){
     auctionMaster.matchBids();
     //Get matches from auctionmaster
     matchedBids = auctionMaster.distributeMatches();
-    showMatches(matchedBids);
+    Display->showMatches(matchedBids);
     //send match to the trader
     for(int j = matchedBids.size()-1; j >= 0; j--){
 	for(int i = NUMTRADERS-1; i >= 0; i--){
 	    if(matchedBids[j].buyerName == Traders[i].getName()){
 		Traders[i].getMatchedBid(matchedBids[j]);
 	    }
-	    if(matchedBids[j].buyerName == Player.getName()){
-		Player.getMatchedBid(matchedBids[j]);
+	    if(matchedBids[j].buyerName == Player->getName()){
+		Player->getMatchedBid(matchedBids[j]);
 	    }
 	    if(matchedBids[j].sellerName == Traders[i].getName()){
 		Traders[i].getMatchedBid(matchedBids[j]);
 	    }
-	    if(matchedBids[j].sellerName == Player.getName()){
-		Player.getMatchedBid(matchedBids[j]);
+	    if(matchedBids[j].sellerName == Player->getName()){
+		Player->getMatchedBid(matchedBids[j]);
 	    }
 	}
     }
@@ -129,8 +134,8 @@ void simulator::getEscrowMoney(){
 		auctionMaster.addMoneyToEscrow(Traders[j].sendMoneyToEscrow(matchedBids[i].matchId), matchedBids[i].matchId);
 	    }
 	}
-	if(matchedBids[i].buyerName == Player.getName()){
-	    auctionMaster.addMoneyToEscrow(Player.sendMoneyToEscrow(matchedBids[i].matchId), matchedBids[i].matchId);
+	if(matchedBids[i].buyerName == Player->getName()){
+	    auctionMaster.addMoneyToEscrow(Player->sendMoneyToEscrow(matchedBids[i].matchId), matchedBids[i].matchId);
 	}
     }
 }
@@ -144,8 +149,8 @@ void simulator::distributeEscrowMoney(){
 		matchedBids.erase(matchedBids.begin() + i);
 	    }
 	}
-	if(matchedBids[i].sellerName == Player.getName()){
-	    Player.getMoneyFromEscrow(auctionMaster.removeMoneyFromEscrow(matchedBids[i].matchId, matchedBids[i].sellerName),
+	if(matchedBids[i].sellerName == Player->getName()){
+	    Player->getMoneyFromEscrow(auctionMaster.removeMoneyFromEscrow(matchedBids[i].matchId, matchedBids[i].sellerName),
 				      matchedBids[i].matchId);
 	    matchedBids.erase(matchedBids.begin() + i);
 	}

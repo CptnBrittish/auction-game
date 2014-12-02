@@ -1,11 +1,21 @@
 #ifndef ITEM_H
 #define ITEM_H
 
+#include <vector>
 #include <string>
 
-std::string getItemName(int);
-std::string getItemDescription(int);
+class items {
+private:
+    struct item {
+	std::string itemName;
+	std::string itemDescription;
+    };
+    std::vector<item> itemTypes;
+public:
+    items();
+    std::string getItemName(int);
+    std::string getItemDescription(int);
 
-int getItemNum(std::string);
-
+    int getItemNum(std::string);
+};
 #endif
