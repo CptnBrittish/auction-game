@@ -11,7 +11,6 @@
 
 player::player(items *Item){
     itemTypes = Item;
-    std::cout << itemTypes->getItemName(1);
     setTraderName(std::string("Player"));
     setTraderMoney(200);
     setMoneyLeft(getTraderMoney());

@@ -33,11 +33,9 @@ simulator::simulator(){
 		getline(traderNameFile, line);
 		while(line != ":end"){
 		    firstNames.push_back(line);
-		    std::cout << line << std::endl;
 		    std::getline(traderNameFile, line);
 		}
 	    }
-	    std::cout << "End first names" << std::endl;
 	    if(line == ":last"){
 		while(line != ":start"){
 		    getline(traderNameFile,line);
@@ -45,7 +43,6 @@ simulator::simulator(){
 		getline(traderNameFile,line);
 		while(line != ":end"){
 		    lastNames.push_back(line);
-		    std::cout << line << std::endl;
 		    std::getline(traderNameFile, line);
 		}
 	    }

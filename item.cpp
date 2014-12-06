@@ -17,7 +17,6 @@ items::items(){
 		if(line == ":name"){
 		    std::getline(itemTypesFile, line);
 		    newItem.itemName = line;
-		    std::cout << "Item Name: " << line <<std::endl;
 		}
 		if(line == ":description"){
 		    std::getline(itemTypesFile, line);
