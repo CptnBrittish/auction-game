@@ -22,9 +22,13 @@ items::items(){
 		    std::getline(itemTypesFile, line);
 		    newItem.itemDescription = line;
 		}
+
+	    }
+	    if(line == ":end"){
+		itemTypes.push_back(newItem);
 	    }
 	}
-	itemTypes.push_back(newItem);
+
     }
     itemTypesFile.close();
 }
@@ -44,4 +48,8 @@ int items::getItemNum(std::string itemName){
 	}
     }
     return -1;
+}
+
+int items::getNumItems(){
+    return itemTypes.size()-1;
 }

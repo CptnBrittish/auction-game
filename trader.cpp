@@ -2,6 +2,7 @@
 #include "match.h"
 #include "limits.h"
 #include "inventory.h"
+#include "item.h"
 
 #include <string>
 #include <iostream>
@@ -14,14 +15,15 @@ trader::trader(){
     moneyLeftForBids = money;
 }
 
-trader::trader(const char * name, char type){
+trader::trader(const char * name, char type, items *Item){
+    itemTypes = Item;
     traderName.assign(std::string(name));
     traderType = type;
     money = rand() % (MAXPRICE - MINPRICE) + MINPRICE;
     moneyLeftForBids = money;
     //Add a random amount of inventory to the trader
     if(traderType == 'A'){
-	for(int i = rand() % 3; i>=0; i--){
+	for(int i = rand() % itemTypes->getNumItems(); i>=0; i--){
 	    item newItem;
 	    newItem.itemNo = i;
 	    newItem.quantity = rand() % MAXBIDQUANTITY+1;
@@ -32,14 +34,15 @@ trader::trader(const char * name, char type){
     }
 }
 
-trader::trader(std::string name, char type){
+trader::trader(std::string name, char type, items *Item){
+    itemTypes = Item;
     traderName.assign(name);
     traderType = type;
     money = rand() % (MAXPRICE - MINPRICE) + MINPRICE;
     moneyLeftForBids = money;
     //Add a random amount of inventory to the trader
     if(traderType == 'A'){
-	for(int i = rand() % 3; i>=0; i--){
+	for(int i = rand() % itemTypes->getNumItems(); i>=0; i--){
 	    item newItem;
 	    newItem.itemNo = i;
 	    newItem.quantity = rand() % MAXBIDQUANTITY+1;

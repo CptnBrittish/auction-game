@@ -51,11 +51,11 @@ simulator::simulator(){
 
     //Add the trader information here
     for(int numBuyers = NUMBUYER; numBuyers >= 1; numBuyers--){
-	Traders.push_back(trader(getTraderName(firstNames, lastNames), 'B'));
+	Traders.push_back(trader(getTraderName(firstNames, lastNames), 'B', &Items));
     }
 
     for(int numSellers = NUMSELLER; numSellers >= 1; numSellers--){
-	Traders.push_back(trader(getTraderName(firstNames, lastNames), 'A'));
+	Traders.push_back(trader(getTraderName(firstNames, lastNames), 'A', &Items));
     }
     traderNameFile.close();
 }

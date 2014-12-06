@@ -16,6 +16,7 @@ public:
     std::string getItemName(int);
     std::string getItemDescription(int);
 
+    int getNumItems();
     int getItemNum(std::string);
 };
 #endif
